@@ -2,5 +2,5 @@ MANIFEST
 __pycache__
 dist
 build
-hashmoji.egg-info
+roadtrip.egg-info
 *.pyc
