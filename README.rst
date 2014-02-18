@@ -34,7 +34,7 @@ You can also get help::
 
 	$ roadtrip -h
 
-You can set a non-default TTL value with ``--ttl``.
+You can set a non-default TTL value with ``--ttl`` and enable verbose output with ``--verbose``.
 
 Roadtrip will use the ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` environment variables if they are set. You
 can provide these values yourself or override the environment variables by providing ``--access-key`` and ``--secret-key``.

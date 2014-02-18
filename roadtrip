@@ -5,8 +5,8 @@ from boto.route53.record import ResourceRecordSets
 
 RECORD_TYPES = ("A", "AAAA",  "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT")
 
-def update(zone_name, type, name, value, ttl, add, key, secret):
-	if key and secret:
+def update(zone_name, type, name, value, ttl, add, key, secret, verbose=False):
+	if key != "" and secret != "":
 		conn = boto.connect_route53(key, secret)
 	else:
 		conn = boto.connect_route53()
@@ -24,15 +24,27 @@ def update(zone_name, type, name, value, ttl, add, key, secret):
 	if zone is None:
 		sys.exit("Unable to find a zone for %s" % zone_name)
 
+	if verbose:
+		print "Updating zone %s %s." % (zone.name, zone.id)
+
 	# Get the existing record and values for the zone.
 	record = zone.find_records(name, type)
 	values = record.resource_records
 
+	if verbose:
+		print "Old values: %s" % values
+
 	# Add or remove entries.
 	if add and value not in values:
 		values.append(value)
-	else:
-		values = (v for v in values if value != v)
+	elif not add:
+		values = [v for v in values if value != v]
+
+	if verbose:
+		print "New values: %s" % values
+
+	if len(values) == len(list(record.resource_records)):
+		sys.exit("Values did not change, not issuing a change request.")
 
 	# Create the change request.
 	changes = ResourceRecordSets(conn, zone.id)
@@ -59,7 +71,9 @@ if __name__ == "__main__":
 	group.add_argument("--delete", '-d', action='store_true', help="Remove the value.")
 	parser.add_argument("--access-key", '-k', type=str, help="Your AWS access key. Will override the AWS_ACCESS_KEY_ID environment variable.")
 	parser.add_argument("--secret-key", '-s', type=str, help="Your AWS secret key. Will override the AWS_SECRET_ACCESS_KEY envionrment variable.")
+	parser.add_argument("--verbose", '-vv', action='store_true', help="Verbose output.")
 	args = parser.parse_args()
 	if args.secret_key and not args.access_key or args.access_key and not args.secret_key:
 		parser.error("Both access key and secret key are required if either is given.")  
-	update(args.zone, args.type, args.name, args.value, args.ttl, args.add, args.access_key, args.secret_key)
+	update(args.zone, args.type, args.name, args.value, args.ttl, args.add, args.access_key, args.secret_key,
+		verbose=args.verbose)
