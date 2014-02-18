@@ -57,7 +57,9 @@ def update(zone_name, type, name, value, ttl, add, key, secret, verbose=False):
 
 	# Submit.
 	result = changes.commit()
-	print result
+
+	if verbose:
+		print result
 	
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Update a Route53 record, adding or removing values.')

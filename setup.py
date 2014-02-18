@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name="roadtrip",
-    version="0.2.0",
+    version="0.2.1",
     description="Update Route53 domains.",
     author="Matt Croydon",
     author_email="mcroydon@gmail.com",
@@ -21,6 +21,6 @@ setup(
     "Operating System :: OS Independent",
     "Operating System :: MacOS :: MacOS X",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3"
+    "Programming Language :: Python :: 2"
     ],
 )

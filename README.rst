@@ -2,7 +2,7 @@
 Roadtrip
 ========
 
-Roadtrip: Route53 domain updates for humans named Matt. At least it works for him. You might find it useful too.
+Route53 domain updates for humans named Matt. At least it works for him. You might find it useful too.
 
 Installation
 ============
@@ -14,6 +14,11 @@ With pip::
 With setuptools::
 
 	$ easy_install roadtrip
+
+Requirements
+============
+
+Roadtrip requires `Python 2.7 <http://www.python.org>`_ and leans heavily on the shoulders of `Boto 2.25.0+ <http://boto.readthedocs.org>`_.
 
 Using
 =====
@@ -33,6 +38,32 @@ You can also remove a value from a list::
 You can also get help::
 
 	$ roadtrip -h
+	usage: roadtrip [-h] --type {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT} --zone
+	                ZONE --name NAME --value VALUE [--ttl TTL] (--add | --delete)
+	                [--access-key ACCESS_KEY] [--secret-key SECRET_KEY]
+	                [--verbose]
+
+	Update a Route53 record, adding or removing values.
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  --type {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT}, -t {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT}
+	                        The type of record to update.
+	  --zone ZONE, -z ZONE  The domain name or zone ID.
+	  --name NAME, -n NAME  The name to update.
+	  --value VALUE, -v VALUE
+	                        The data to add or remove.
+	  --ttl TTL, -l TTL     Non-default TTL value.
+	  --add, -a             Add the value.
+	  --delete, -d          Remove the value.
+	  --access-key ACCESS_KEY, -k ACCESS_KEY
+	                        Your AWS access key. Will override the
+	                        AWS_ACCESS_KEY_ID environment variable.
+	  --secret-key SECRET_KEY, -s SECRET_KEY
+	                        Your AWS secret key. Will override the
+	                        AWS_SECRET_ACCESS_KEY envionrment variable.
+	  --verbose, -vv        Verbose output.
+
 
 You can set a non-default TTL value with ``--ttl`` and enable verbose output with ``--verbose``.
 
