@@ -5,7 +5,7 @@ from boto.route53.record import ResourceRecordSets
 
 RECORD_TYPES = ("A", "AAAA",  "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT")
 
-def update(zone_name, type, name, value, add, key, secret):
+def update(zone_name, type, name, value, ttl, add, key, secret):
 	if key and secret:
 		conn = boto.connect_route53(key, secret)
 	else:
@@ -36,7 +36,10 @@ def update(zone_name, type, name, value, add, key, secret):
 
 	# Create the change request.
 	changes = ResourceRecordSets(conn, zone.id)
-	change = changes.add_change("UPSERT", name, type)
+	if ttl:
+		change = changes.add_change("UPSERT", name, type, ttl)
+	else:
+		change = changes.add_change("UPSERT", name, type)
 	for v in values:
 		change.add_value(v)
 
@@ -50,6 +53,7 @@ if __name__ == "__main__":
 	parser.add_argument('--zone', '-z', type=str, required=True, help="The domain name or zone ID.")
 	parser.add_argument("--name", '-n', type=str, required=True, help="The name to update.")
 	parser.add_argument("--value", "-v", type=str, required=True, help="The data to add or remove.")
+	parser.add_argument("--ttl", '-l', type=int, required=False, help="Non-default TTL value.")
 	group = parser.add_mutually_exclusive_group(required=True)
 	group.add_argument("--add", '-a', action='store_true', help="Add the value.")
 	group.add_argument("--delete", '-d', action='store_true', help="Remove the value.")
@@ -58,4 +62,4 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 	if args.secret_key and not args.access_key or args.access_key and not args.secret_key:
 		parser.error("Both access key and secret key are required if either is given.")  
-	update(args.zone, args.type, args.name, args.value, args.add, args.access_key, args.secret_key)
+	update(args.zone, args.type, args.name, args.value, args.ttl, args.add, args.access_key, args.secret_key)

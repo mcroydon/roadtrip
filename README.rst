@@ -20,19 +20,24 @@ Using
 
 You can use roadtrip to update a round-robin A record, adding a new value if it doesn't already exist::
 
-	$ roadtrip --type A --zone tinygophers.com --name serf1.tinygophers.com --value 1.2.3.4 --add
+	$ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --add
 
 There is also a compact syntax for each option::
 
-	$ roadtrip -t A -z tinygophers.com -n serf1.tinygophers.com -v 1.2.3.4 -a
+	$ roadtrip -t A -z example.com -n mycluster.example.com -v 1.2.3.4 -a
 
 You can also remove a value from a list::
 
-	$ roadtrip --type A --zone tinygophers.com --name serf1.tinygophers.com --value 1.2.3.4 --delete
+	$ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --delete
 
 You can also get help::
 
 	$ roadtrip -h
+
+You can set a non-default TTL value with ``--ttl``.
+
+Roadtrip will use the ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` environment variables if they are set. You
+can provide these values yourself or override the environment variables by providing ``--access-key`` and ``--secret-key``.
 
 Under the hood
 ==============
