@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+
+import argparse, boto, sys
+from boto.route53.record import ResourceRecordSets
+
+RECORD_TYPES = ("A", "AAAA",  "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT")
+
+def update(zone_name, type, name, value, add, key, secret):
+	if key and secret:
+		conn = boto.connect_route53(key, secret)
+	else:
+		conn = boto.connect_route53()
+	
+	# Get the zone by domain name.
+	zone = conn.get_zone(zone_name)
+
+	# Try getting the zone by identifier.
+	if zone is None:
+		for z in conn.get_zones():
+			if zone_name == z.id:
+				zone = z
+
+	# Exit if we can't find either zone.
+	if zone is None:
+		sys.exit("Unable to find a zone for %s" % zone_name)
+
+	# Get the existing record and values for the zone.
+	record = zone.find_records(name, type)
+	values = record.resource_records
+
+	# Add or remove entries.
+	if add and value not in values:
+		values.append(value)
+	else:
+		values = (v for v in values if value != v)
+
+	# Create the change request.
+	changes = ResourceRecordSets(conn, zone.id)
+	change = changes.add_change("UPSERT", name, type)
+	for v in values:
+		change.add_value(v)
+
+	# Submit.
+	result = changes.commit()
+	print result
+	
+if __name__ == "__main__":
+	parser = argparse.ArgumentParser(description='Update a Route53 record, adding or removing values.')
+	parser.add_argument('--type', '-t', type=str, required=True, choices=RECORD_TYPES, help="The type of record to update.")
+	parser.add_argument('--zone', '-z', type=str, required=True, help="The domain name or zone ID.")
+	parser.add_argument("--name", '-n', type=str, required=True, help="The name to update.")
+	parser.add_argument("--value", "-v", type=str, required=True, help="The data to add or remove.")
+	group = parser.add_mutually_exclusive_group(required=True)
+	group.add_argument("--add", '-a', action='store_true', help="Add the value.")
+	group.add_argument("--delete", '-d', action='store_true', help="Remove the value.")
+	parser.add_argument("--access-key", '-k', type=str, help="Your AWS access key. Will override the AWS_ACCESS_KEY_ID environment variable.")
+	parser.add_argument("--secret-key", '-s', type=str, help="Your AWS secret key. Will override the AWS_SECRET_ACCESS_KEY envionrment variable.")
+	args = parser.parse_args()
+	if args.secret_key and not args.access_key or args.access_key and not args.secret_key:
+		parser.error("Both access key and secret key are required if either is given.")  
+	update(args.zone, args.type, args.name, args.value, args.add, args.access_key, args.secret_key)
