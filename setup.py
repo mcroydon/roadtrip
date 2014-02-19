@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name="roadtrip",
-    version="0.2.1",
+    version="0.2.2",
     description="Update Route53 domains.",
     author="Matt Croydon",
     author_email="mcroydon@gmail.com",

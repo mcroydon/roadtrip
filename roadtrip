@@ -29,7 +29,10 @@ def update(zone_name, type, name, value, ttl, add, key, secret, verbose=False):
 
 	# Get the existing record and values for the zone.
 	record = zone.find_records(name, type)
-	values = record.resource_records
+	if record is not None:
+		values = list(record.resource_records)
+	else:
+		values = []
 
 	if verbose:
 		print "Old values: %s" % values
@@ -43,7 +46,7 @@ def update(zone_name, type, name, value, ttl, add, key, secret, verbose=False):
 	if verbose:
 		print "New values: %s" % values
 
-	if len(values) == len(list(record.resource_records)):
+	if record is not None and len(values) == len(record.resource_records):
 		sys.exit("Values did not change, not issuing a change request.")
 
 	# Create the change request.
