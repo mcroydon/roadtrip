@@ -46,7 +46,7 @@ You can also get help::
                     (--add | --delete | --overwrite) [--access-key ACCESS_KEY]
                     [--secret-key SECRET_KEY] [--verbose]
 
-    Update a Route53 record, adding or removing values.
+    Update a Route53 record, adding, removing or overwriting values.
 
     optional arguments:
       -h, --help            show this help message and exit

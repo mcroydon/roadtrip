@@ -72,7 +72,7 @@ def update(zone_name, type, name, arg_values, ttl, add, overwrite, key, secret, 
 		print result
 	
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description='Update a Route53 record, adding or removing values.')
+	parser = argparse.ArgumentParser(description='Update a Route53 record, adding, removing or overwriting values.')
 	parser.add_argument('--type', '-t', type=str, required=True, choices=RECORD_TYPES, help="The type of record to update.")
 	parser.add_argument('--zone', '-z', type=str, required=True, help="The domain name or zone ID.")
 	parser.add_argument("--name", '-n', type=str, required=True, help="The name to update.")
