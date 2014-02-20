@@ -2,7 +2,7 @@
 Roadtrip
 ========
 
-Route53 domain updates for humans named Matt. At least it works for him. You might find it useful too.
+Route53 domain updates for humans.
 
 Installation
 ============
@@ -34,6 +34,10 @@ There is also a compact syntax for each option::
 You can also remove a value from a list::
 
     $ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --delete
+
+You can also specify multiple values to be added, removed, or overwritten (which will discard all previous values)::
+
+    $ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --value 1.2.3.5 --overwrite
 
 You can also get help::
 

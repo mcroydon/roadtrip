@@ -5,8 +5,8 @@ except ImportError:
 
 setup(
     name="roadtrip",
-    version="0.2.3",
-    description="Update Route53 domains.",
+    version="0.2.4",
+    description="Route53 domain updates for humans.",
     author="Matt Croydon",
     author_email="mcroydon@gmail.com",
     long_description=open("README.rst", "r").read(),
