@@ -5,7 +5,7 @@ from boto.route53.record import ResourceRecordSets
 
 RECORD_TYPES = ("A", "AAAA",  "CNAME", "MX", "NS", "PTR", "SOA", "SPF", "SRV", "TXT")
 
-def update(zone_name, type, name, value, ttl, add, key, secret, verbose=False):
+def update(zone_name, type, name, arg_values, ttl, add, key, secret, verbose=False):
 	if key != "" and secret != "":
 		conn = boto.connect_route53(key, secret)
 	else:
@@ -30,18 +30,19 @@ def update(zone_name, type, name, value, ttl, add, key, secret, verbose=False):
 	# Get the existing record and values for the zone.
 	record = zone.find_records(name, type)
 	if record is not None:
-		values = list(record.resource_records)
+		values = set(record.resource_records)
 	else:
-		values = []
+		values = set()
 
 	if verbose:
 		print "Old values: %s" % values
 
 	# Add or remove entries.
-	if add and value not in values:
-		values.append(value)
-	elif not add:
-		values = [v for v in values if value != v]
+	for v in arg_values:
+		if add and v not in values:
+			values.add(v)
+		elif not add:
+			values.remove(v)
 
 	if verbose:
 		print "New values: %s" % values
@@ -69,7 +70,7 @@ if __name__ == "__main__":
 	parser.add_argument('--type', '-t', type=str, required=True, choices=RECORD_TYPES, help="The type of record to update.")
 	parser.add_argument('--zone', '-z', type=str, required=True, help="The domain name or zone ID.")
 	parser.add_argument("--name", '-n', type=str, required=True, help="The name to update.")
-	parser.add_argument("--value", "-v", type=str, required=True, help="The data to add or remove.")
+	parser.add_argument("--value", "-v", type=str, required=True, action='append', help="The data to add or remove. This argument can be used multiple times to add or remove multiple values.")
 	parser.add_argument("--ttl", '-l', type=int, required=False, help="Non-default TTL value.")
 	group = parser.add_mutually_exclusive_group(required=True)
 	group.add_argument("--add", '-a', action='store_true', help="Add the value.")
