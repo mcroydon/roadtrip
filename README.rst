@@ -9,11 +9,11 @@ Installation
 
 With pip::
 
-	$ pip install roadtrip
+    $ pip install roadtrip
 
 With setuptools::
 
-	$ easy_install roadtrip
+    $ easy_install roadtrip
 
 Requirements
 ============
@@ -25,44 +25,45 @@ Using
 
 You can use roadtrip to update a round-robin A record, adding a new value if it doesn't already exist::
 
-	$ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --add
+    $ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --add
 
 There is also a compact syntax for each option::
 
-	$ roadtrip -t A -z example.com -n mycluster.example.com -v 1.2.3.4 -a
+    $ roadtrip -t A -z example.com -n mycluster.example.com -v 1.2.3.4 -a
 
 You can also remove a value from a list::
 
-	$ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --delete
+    $ roadtrip --type A --zone example.com --name mycluster.example.com --value 1.2.3.4 --delete
 
 You can also get help::
 
-	$ roadtrip -h
-	usage: roadtrip [-h] --type {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT} --zone
-	                ZONE --name NAME --value VALUE [--ttl TTL] (--add | --delete)
-	                [--access-key ACCESS_KEY] [--secret-key SECRET_KEY]
-	                [--verbose]
+    usage: roadtrip [-h] --type {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT} --zone
+                    ZONE --name NAME --value VALUE [--ttl TTL]
+                    (--add | --delete | --overwrite) [--access-key ACCESS_KEY]
+                    [--secret-key SECRET_KEY] [--verbose]
 
-	Update a Route53 record, adding or removing values.
+    Update a Route53 record, adding or removing values.
 
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  --type {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT}, -t {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT}
-	                        The type of record to update.
-	  --zone ZONE, -z ZONE  The domain name or zone ID.
-	  --name NAME, -n NAME  The name to update.
-	  --value VALUE, -v VALUE
-	                        The data to add or remove.
-	  --ttl TTL, -l TTL     Non-default TTL value.
-	  --add, -a             Add the value.
-	  --delete, -d          Remove the value.
-	  --access-key ACCESS_KEY, -k ACCESS_KEY
-	                        Your AWS access key. Will override the
-	                        AWS_ACCESS_KEY_ID environment variable.
-	  --secret-key SECRET_KEY, -s SECRET_KEY
-	                        Your AWS secret key. Will override the
-	                        AWS_SECRET_ACCESS_KEY envionrment variable.
-	  --verbose, -vv        Verbose output.
+    optional arguments:
+      -h, --help            show this help message and exit
+      --type {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT}, -t {A,AAAA,CNAME,MX,NS,PTR,SOA,SPF,SRV,TXT}
+                            The type of record to update.
+      --zone ZONE, -z ZONE  The domain name or zone ID.
+      --name NAME, -n NAME  The name to update.
+      --value VALUE, -v VALUE
+                            The data to add or remove. This argument can be used
+                            multiple times to add or remove multiple values.
+      --ttl TTL, -l TTL     Non-default TTL value.
+      --add, -a             Add the value.
+      --delete, -d          Remove the value.
+      --overwrite, -o       Overwrite all existing values with those provided.
+      --access-key ACCESS_KEY, -k ACCESS_KEY
+                            Your AWS access key. Will override the
+                            AWS_ACCESS_KEY_ID environment variable.
+      --secret-key SECRET_KEY, -s SECRET_KEY
+                            Your AWS secret key. Will override the
+                            AWS_SECRET_ACCESS_KEY envionrment variable.
+      --verbose, -vv        Verbose output.
 
 
 You can set a non-default TTL value with ``--ttl`` and enable verbose output with ``--verbose``.
@@ -79,6 +80,6 @@ to update the values based on the values that exist when you call it.
 
 .. WARNING::
 
-	Due to the nature of eventual consistency there is a chance that the values that roadtrip sees when it is run
-	are different than the values stored in Route53. **ROADTRIP MIGHT HELP YOU LOSE DATA** if you are not careful.
-	Please be careful.
+    Due to the nature of eventual consistency there is a chance that the values that roadtrip sees when it is run
+    are different than the values stored in Route53. **ROADTRIP MIGHT HELP YOU LOSE DATA** if you are not careful.
+    Please be careful.
